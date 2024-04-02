@@ -1,0 +1,56 @@
+server:
+  port: 8080
+  servlet:
+    encoding:
+      charset: utf-8
+      force: true
+spring:
+  datasource:
+    url: jdbc:mysql://localhost:3306/newtral?servteserTimezone=Asia/Seoul&characterEncoding=UTF-8
+    username: testuser
+    password: 1234
+    driver-class-name: com.mysql.cj.jdbc.Driver
+
+  thymeleaf:
+    cache: false
+  mvc:
+    pathmatch:
+      matching-strategy: ant_path_matcher
+  output:
+    ansi:
+      enabled: always
+  jpa:
+    defer-datasource-initialization: true
+    open-in-view: false
+    show-sql: true
+    hibernate:
+      ddl-auto: create-drop
+  jwt:
+    secret: "rropwejqcoigfjgoipcmejgoipwemjctoipdsfnoiqweufhdsnjncjkxznvklnioudhfjwheoiuqhuifohjkadsnfjkasdlnjasdiofuhuiwehfoiuqhweuoifhudsahfjkdslavjnzcxmvlkjasdflahf"
+    refresh-token-valid-time: 600000
+    access-token-valid-time: 3600000
+  security:
+    oauth2:
+      client:
+        registration:
+          google:
+            client-id: 1049946425106-ksl6upcn28epp3vvdoop92hnjr9do226.apps.googleusercontent.com
+            client-secret: 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
+            redirect-uri: http://localhost:8080/login/oauth2/code/google
+            scope: email,profile
+            client-name: google
+          kakao:
+            client-id: aa25f11fde7de926d5821591d7c8f935
+            client-secret: zs45AV2rn2e3wxiI13nRL4Oz3305TYmm
+            redirect-uri: https://newtral.me:8080/login/oauth2/code/kakao
+            client-authentication-method: client_secret_post
+            authorization-grant-type: authorization_code
+            scope: profile_nickname, profile_image, account_email
+            client-name: kakao
+
+        provider:
+          kakao:
+            authorization-uri: https://kauth.kakao.com/oauth/authorize
+            token-uri: https://kauth.kakao.com/oauth/token
+            user-info-uri: https://kapi.kakao.com/v2/user/me
+            user-name-attribute: id
