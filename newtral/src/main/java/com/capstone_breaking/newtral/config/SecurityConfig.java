@@ -36,7 +36,7 @@ public class SecurityConfig {
                         sessionManagement
                                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(authorize -> authorize
-                        .requestMatchers("v1/**").permitAll()
+                        .requestMatchers("/**").permitAll()
                         .requestMatchers("/health-check").permitAll()
                         .anyRequest().authenticated()
                 )

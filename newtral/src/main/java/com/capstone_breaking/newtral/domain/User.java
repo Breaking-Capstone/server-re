@@ -37,6 +37,8 @@ public class User extends Time {
 
     private String provider;
 
+    private Long age;
+
     public User update(String name, String profileImageUrl) {
         this.name = name;
         this.profileImage = profileImageUrl;
