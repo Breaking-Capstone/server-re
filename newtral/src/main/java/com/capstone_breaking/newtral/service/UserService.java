@@ -70,9 +70,11 @@ public class UserService {
 
     public void setUserInterest(RequestInterest requestInterest, UserDetails userDetails){
         Long userId = ((CustomUserDetails) userDetails).getId();
+        log.info("유저 아이디 = {}", userId);
         User user = userRepository.findById(userId).get();
 
         for(String category : requestInterest.getInterests()){
+            log.info("카테고리: {}", category);
             Category getCategory = categoryRepository.findById(CategoryList.valueOf(category).getId()).get();
 
             UserCategory userCategory = UserCategory.builder()

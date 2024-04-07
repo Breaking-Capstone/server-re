@@ -33,7 +33,7 @@ public class UserController {
     }
 
     @PatchMapping("/users/interest")
-    public ResponseEntity<CommonResponse> setUserInterest(RequestInterest requestInterest,
+    public ResponseEntity<CommonResponse> setUserInterest(@RequestBody RequestInterest requestInterest,
                                                           @AuthenticationPrincipal UserDetails userDetails){
         userService.setUserInterest(requestInterest, userDetails);
         return ResponseEntity.status(HttpStatus.OK)

@@ -17,8 +17,10 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.reactive.function.client.WebClient;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -81,16 +83,22 @@ public class ArticleService {
         return articleRepository.count();
     }
 
+
+    @Transactional
     public ResponseInterestCategoryArticle getUserInterestArticle(UserDetails userDetails){
         Long userId = ((CustomUserDetails) userDetails).getId();
         List<UserCategory> userInterest = userCategoryRepository.findUserCategoryByUserId(userId);
 
-        List<ResponseArticleForm> responseArticleForms = null;
-        ResponseArticle responseArticle = null;
+        List<ResponseArticleForm> responseArticleForms = new ArrayList<>();
+
         for(UserCategory interest : userInterest){
             Long categoryId = interest.getCategory().getId();
             List<ResponseArticle> responseArticles = articleRepository.findTop10ByCategoryId(categoryId).stream()
-                    .map(article -> responseArticle.toDto(article)).toList();
+                    .map(article -> new ResponseArticle(article.getId(), article.getTitle(),
+                            article.getDescription(), article.getContentShort(),
+                            article.getCompany(),article.getAuthor(),article.getUrl(),
+                            article.getUrlImage(),article.getPublishedAt(),
+                            article.getPercent1(),article.getPercent2())).toList();
 
             ResponseArticleForm responseArticleForm = new ResponseArticleForm(interest.getCategory().getCategoryName(), responseArticles);
 
