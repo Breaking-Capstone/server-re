@@ -1,0 +1,106 @@
+package com.capstone_breaking.newtral.service;
+
+import com.capstone_breaking.newtral.common.CustomUserDetails;
+import com.capstone_breaking.newtral.domain.Article;
+import com.capstone_breaking.newtral.domain.UserCategory;
+import com.capstone_breaking.newtral.dto.Article.ResponseArticle;
+import com.capstone_breaking.newtral.dto.Article.ResponseArticleForAI;
+import com.capstone_breaking.newtral.dto.Article.NewsApi.ResponseNewsApi;
+import com.capstone_breaking.newtral.dto.Article.ResponseArticleForm;
+import com.capstone_breaking.newtral.dto.Article.ResponseInterestCategoryArticle;
+import com.capstone_breaking.newtral.dto.CategoryList;
+import com.capstone_breaking.newtral.repository.CategoryRepository;
+import com.capstone_breaking.newtral.repository.ArticleRepository;
+import com.capstone_breaking.newtral.repository.UserCategoryRepository;
+import com.capstone_breaking.newtral.repository.UserRepository;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.stereotype.Service;
+import org.springframework.web.reactive.function.client.WebClient;
+
+import java.util.List;
+import java.util.Optional;
+
+@Service
+@RequiredArgsConstructor
+@Slf4j
+public class ArticleService {
+
+    private final ArticleRepository articleRepository;
+
+    private final CategoryRepository categoryRepository;
+
+    private final UserCategoryRepository userCategoryRepository;
+
+    private final UserRepository userRepository;
+
+    public void getNewsAtApi(){
+        WebClient webClient = WebClient.create("https://newsapi.org/v2");
+
+        for(CategoryList category : CategoryList.values()){
+            String categoryName = category.getName();
+            log.info("카테고리 이름: {}", categoryName);
+            webClient.get()
+                    .uri(uriBuilder -> uriBuilder.path("/top-headlines")
+                            .queryParam("country", "kr")
+                            .queryParam("apiKey", "4c9503509a624941b925e2500cd8a531")
+                            .queryParam("category",categoryName)
+                            .build())
+                    .retrieve()
+                    .bodyToMono(ResponseNewsApi.class)
+                    .subscribe(responseNewsApi -> {
+                        List<Article> apiResult = responseNewsApi.getArticles().stream().map(
+                                responseNewsForm -> new Article(responseNewsForm.getTitle(), responseNewsForm.getDescription(), null,
+                                        responseNewsForm.getAuthor(),responseNewsForm.getUrl(),
+                                        responseNewsForm.getSource().getName(),
+                                        responseNewsForm.getUrlToImage(),responseNewsForm.getPublishedAt(),
+                                        categoryRepository.findById(CategoryList.valueOf(categoryName).getId()).get()))
+                                .toList();
+                        articleRepository.saveAll(apiResult);
+                    });
+        }
+
+    }
+
+    public List<ResponseArticleForAI> getNews(Long firstId, Long endId){
+        List<Article> newsList = articleRepository.findByIdBetween(firstId, endId);
+
+        List<ResponseArticleForAI> responseNews = newsList.stream().map(news -> new ResponseArticleForAI(news.getId(), news.getTitle(), news.getDescription())).toList();
+
+        return responseNews;
+    }
+
+    public void setNewsCurrent(Long id, Long percent1, Long percent2){
+        Optional<Article> news = articleRepository.findById(id);
+
+        articleRepository.save(news.get().setPercent(percent1, percent2));
+    }
+
+    public Long getArticleCount(){
+        return articleRepository.count();
+    }
+
+    public ResponseInterestCategoryArticle getUserInterestArticle(UserDetails userDetails){
+        Long userId = ((CustomUserDetails) userDetails).getId();
+        List<UserCategory> userInterest = userCategoryRepository.findUserCategoryByUserId(userId);
+
+        List<ResponseArticleForm> responseArticleForms = null;
+        ResponseArticle responseArticle = null;
+        for(UserCategory interest : userInterest){
+            Long categoryId = interest.getCategory().getId();
+            List<ResponseArticle> responseArticles = articleRepository.findTop10ByCategoryId(categoryId).stream()
+                    .map(article -> responseArticle.toDto(article)).toList();
+
+            ResponseArticleForm responseArticleForm = new ResponseArticleForm(interest.getCategory().getCategoryName(), responseArticles);
+
+            responseArticleForms.add(responseArticleForm);
+
+        }
+
+        ResponseInterestCategoryArticle responseInterestCategoryArticle = new ResponseInterestCategoryArticle(userInterest.size(), responseArticleForms);
+
+        return responseInterestCategoryArticle;
+    }
+
+}

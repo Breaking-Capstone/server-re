@@ -1,10 +1,10 @@
-package com.capstone_breaking.newtral.dto;
+package com.capstone_breaking.newtral.dto.Article;
 
 import lombok.Builder;
 import lombok.Getter;
 
 @Getter
-public class ResponseNews {
+public class ResponseArticleForAI {
 
     private Long id;
 
@@ -13,7 +13,7 @@ public class ResponseNews {
     private String content;
 
     @Builder
-    public ResponseNews(Long id, String title, String content){
+    public ResponseArticleForAI(Long id, String title, String content){
         this.id = id;
         this.title = title;
         this.content = content;

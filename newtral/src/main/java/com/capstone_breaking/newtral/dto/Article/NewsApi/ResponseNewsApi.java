@@ -1,4 +1,4 @@
-package com.capstone_breaking.newtral.dto;
+package com.capstone_breaking.newtral.dto.Article.NewsApi;
 
 import lombok.Builder;
 import lombok.Getter;

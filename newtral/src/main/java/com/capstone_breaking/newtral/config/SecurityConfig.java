@@ -1,8 +1,8 @@
 package com.capstone_breaking.newtral.config;
 
+import com.capstone_breaking.newtral.common.JwtAuthFilter;
+import com.capstone_breaking.newtral.common.JwtExceptionHandlerFilter;
 import com.capstone_breaking.newtral.common.JwtProvider;
-import com.capstone_breaking.newtral.service.CustomOAuth2Service;
-import com.capstone_breaking.newtral.service.OAuth2SuccessHandler;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -25,7 +25,7 @@ import java.util.List;
 @EnableWebSecurity
 @RequiredArgsConstructor
 public class SecurityConfig {
-    private final CustomOAuth2Service customOAuth2Service;
+
     private final JwtProvider jwtProvider;
     @Bean
     protected SecurityFilterChain configure(HttpSecurity httpSecurity) throws Exception {
@@ -40,10 +40,13 @@ public class SecurityConfig {
                         .requestMatchers("/health-check").permitAll()
                         .anyRequest().authenticated()
                 )
-                .oauth2Login(oauth2 -> oauth2
-                        .userInfoEndpoint(userInfoEndpointConfig -> userInfoEndpointConfig
-                                .userService(customOAuth2Service))
-                        .successHandler(new OAuth2SuccessHandler(jwtProvider)));
+                .addFilterBefore(new JwtExceptionHandlerFilter(),
+                        UsernamePasswordAuthenticationFilter.class)
+                .addFilterBefore(new JwtAuthFilter(jwtProvider),
+                        UsernamePasswordAuthenticationFilter.class)
+
+        ;
+
 
         return httpSecurity.build();
     }

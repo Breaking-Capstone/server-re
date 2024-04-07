@@ -7,6 +7,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.util.ArrayList;
 import java.util.List;
 
 
@@ -18,7 +19,6 @@ public class User extends Time {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
 
     //oauth2 서비스에서 받아올 정보
     private String email;
@@ -32,16 +32,27 @@ public class User extends Time {
 
     private String profileImage;
 
+    private String provider;
+
     @Column(name="refresh_token")
     private String refreshToken;
 
-    private String provider;
-
+    //프론트에서 직접 입력받을 정보
     private Long age;
+
+    @OneToMany(mappedBy = "user")
+    private List<UserCategory> interests = new ArrayList<>();
+
 
     public User update(String name, String profileImageUrl) {
         this.name = name;
         this.profileImage = profileImageUrl;
+
+        return this;
+    }
+
+    public User editRefreshToken(String refreshToken){
+        this.refreshToken = refreshToken;
 
         return this;
     }

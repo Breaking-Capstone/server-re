@@ -1,15 +1,15 @@
-package com.capstone_breaking.newtral.dto;
+package com.capstone_breaking.newtral.dto.Article.NewsApi;
 
+import com.capstone_breaking.newtral.dto.Article.NewsApi.ResponseArticleCompany;
 import lombok.Builder;
 import lombok.Getter;
 
 import java.time.LocalDateTime;
-import java.util.List;
 
 @Getter
 public class ResponseNewsForm {
 
-    private List<ResponseArticleCompany> responseArticleCompanies;
+    private ResponseArticleCompany source;
 
     private String author;
 
@@ -26,10 +26,10 @@ public class ResponseNewsForm {
     private String content;
 
     @Builder
-    public ResponseNewsForm(List<ResponseArticleCompany> responseArticleCompanies, String author,
+    public ResponseNewsForm(ResponseArticleCompany source, String author,
                             String title, String description, String url, String urlToImage,
                             LocalDateTime publishedAt, String content){
-        this.responseArticleCompanies = responseArticleCompanies;
+        this.source = source;
         this.author = author;
         this.title = title;
         this.description = description;
