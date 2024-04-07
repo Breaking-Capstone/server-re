@@ -11,4 +11,5 @@ public interface UserCategoryRepository extends JpaRepository<UserCategory, Long
 
     List<UserCategory> findUserCategoryByUserId(Long userId);
 
+    boolean findByCategoryId(Long categoryId);
 }

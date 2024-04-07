@@ -73,17 +73,17 @@ public class UserService {
         log.info("유저 아이디 = {}", userId);
         User user = userRepository.findById(userId).get();
 
+        userCategoryRepository.deleteAll(userCategoryRepository.findUserCategoryByUserId(userId));
+
         for(String category : requestInterest.getInterests()){
             log.info("카테고리: {}", category);
             Category getCategory = categoryRepository.findById(CategoryList.valueOf(category).getId()).get();
+                UserCategory userCategory = UserCategory.builder()
+                        .category(getCategory)
+                        .user(user)
+                        .build();
 
-            UserCategory userCategory = UserCategory.builder()
-                    .category(getCategory)
-                    .user(user)
-                    .build();
-
-            userCategoryRepository.save(userCategory);
-
+                userCategoryRepository.save(userCategory);
         }
     }
 }
