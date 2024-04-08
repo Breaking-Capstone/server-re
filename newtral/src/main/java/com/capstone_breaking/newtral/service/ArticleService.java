@@ -64,7 +64,8 @@ public class ArticleService {
     public List<ResponseArticleForAI> getNews(Long firstId, Long endId) {
         List<Article> newsList = articleRepository.findByIdBetween(firstId, endId);
 
-        List<ResponseArticleForAI> responseNews = newsList.stream().map(news -> new ResponseArticleForAI(news.getId(), news.getTitle(), news.getDescription())).toList();
+        List<ResponseArticleForAI> responseNews = newsList.stream()
+                .map(news -> new ResponseArticleForAI(news.getId(), news.getTitle(), news.getDescription())).toList();
 
         return responseNews;
     }
@@ -106,5 +107,7 @@ public class ArticleService {
 
         return responseInterestCategoryArticle;
     }
+
+
 
 }
