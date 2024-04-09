@@ -3,11 +3,8 @@ package com.capstone_breaking.newtral.service;
 import com.capstone_breaking.newtral.common.CustomUserDetails;
 import com.capstone_breaking.newtral.domain.Article;
 import com.capstone_breaking.newtral.domain.UserCategory;
+import com.capstone_breaking.newtral.dto.Article.*;
 import com.capstone_breaking.newtral.dto.Article.NewsApi.ResponseNewsApi;
-import com.capstone_breaking.newtral.dto.Article.ResponseArticle;
-import com.capstone_breaking.newtral.dto.Article.ResponseArticleForAI;
-import com.capstone_breaking.newtral.dto.Article.ResponseArticleForm;
-import com.capstone_breaking.newtral.dto.Article.ResponseInterestCategoryArticle;
 import com.capstone_breaking.newtral.dto.CategoryList;
 import com.capstone_breaking.newtral.repository.ArticleRepository;
 import com.capstone_breaking.newtral.repository.CategoryRepository;
@@ -61,11 +58,16 @@ public class ArticleService {
 
     }
 
-    public List<ResponseArticleForAI> getNews(Long firstId, Long endId) {
+    public ResponseArticleForAIForm getNews(Long firstId, Long endId) {
         List<Article> newsList = articleRepository.findByIdBetween(firstId, endId);
 
-        List<ResponseArticleForAI> responseNews = newsList.stream()
-                .map(news -> new ResponseArticleForAI(news.getId(), news.getTitle(), news.getDescription())).toList();
+        ResponseArticleForAIForm responseNews =
+                ResponseArticleForAIForm.builder()
+                        .responseArticleForAIS(newsList.stream()
+                                .map(news -> new ResponseArticleForAI(news.getId(), news.getTitle(), news.getDescription())).toList())
+                        .count(newsList.size())
+                        .build();
+
 
         return responseNews;
     }
