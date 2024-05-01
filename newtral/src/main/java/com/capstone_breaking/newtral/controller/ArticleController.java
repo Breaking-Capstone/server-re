@@ -72,7 +72,7 @@ public class ArticleController {
     }
 
     @GetMapping ("/articles/search/{keyword}")
-    @Operation(summary = "전체 뉴스에서 검색하기", description = "제목+내용에서 검색한다. 제목이 먼저나오고 내용이 뒤에나온다 <br><br> 입력: <br> 검색할 단어 <br><br> 출력: <br> List<ResponseArticle>")
+    @Operation(summary = "전체 뉴스에서 검색하기", description = "제목+내용에서 검색한다. 제목이 먼저나오고 내용이 뒤에나온다 <br><br> 입력: <br> 검색할 단어 <br><br> 출력: <br> List(ResponseArticle) ")
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "데이터베이스에서 뉴스 받아오기 성공", content = @Content(schema = @Schema(implementation = ResponseArticle.class))),
     })
@@ -82,7 +82,7 @@ public class ArticleController {
     }
 
     @GetMapping("/articles/{reliability_p}")
-    @Operation(summary = "신뢰도 위의 뉴스만 출력", description = "신뢰도 위의 뉴스만 출력(전체뉴스 중) <br><br> 입력: <br> 신뢰도(기본값: 60) <br><br> 출력: <br> List<ResponseArticle>")
+    @Operation(summary = "신뢰도 위의 뉴스만 출력", description = "신뢰도 위의 뉴스만 출력(전체뉴스 중) <br><br> 입력: <br> 신뢰도(기본값: 60) <br><br> 출력: <br> List(ResponseArticle) ")
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "데이터베이스에서 뉴스 받아오기 성공", content = @Content(schema = @Schema(implementation = ResponseInterestCategoryArticle.class))),
     })
@@ -100,4 +100,14 @@ public class ArticleController {
     public ResponseEntity<CommonResponse> getArticle(@PathVariable Long article_id){
         return ResponseEntity.status(HttpStatus.OK).body(new CommonResponse("OK", articleService.getArticle(article_id)));
     }
+
+    @GetMapping("/articles/categorys/{category}")
+    @Operation(summary = "카테고리 별 뉴스들 출력", description = "카테고리 별로 맞는 뉴스를 모두 가져옴 <br><br> 입력: <br> 카테고리명 <br><br> 출력: <br> List(ResponseArticle) ")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "데이터베이스에서 뉴스 받아오기 성공", content = @Content(schema = @Schema(implementation = ResponseArticle.class))),
+    })
+    public ResponseEntity<CommonResponse> getCategroyArticle(@PathVariable String category){
+        return ResponseEntity.status(HttpStatus.OK).body(new CommonResponse("OK", articleService.getCategoryArticle(category)));
+    }
+
 }

@@ -160,4 +160,17 @@ public class ArticleService {
 
         return responseArticle;
     }
+
+    @Transactional
+    public List<ResponseArticle> getCategoryArticle(String category){
+        Long categoryId = CategoryList.valueOf(category).getId();
+        List<ResponseArticle> responseArticles = articleRepository.findByCategoryId(categoryId).stream()
+                .map(article -> new ResponseArticle(article.getId(), article.getTitle(),
+                        article.getDescription(), article.getContentShort(),
+                        article.getCompany(), article.getAuthor(), article.getUrl(),
+                        article.getUrlImage(), article.getPublishedAt(),
+                        article.getPercent1(), article.getPercent2())).toList();
+
+        return responseArticles;
+    }
 }

@@ -18,4 +18,7 @@ public interface ArticleRepository extends JpaRepository<Article, Long> {
 
     List<Article> findByPercent1GreaterThan(Long percent);
 
+    List<Article> findByCategoryId(Long categoryId);
+
+
 } //정아는 바보가 맞다.
