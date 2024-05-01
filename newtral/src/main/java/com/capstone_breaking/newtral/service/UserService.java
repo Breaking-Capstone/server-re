@@ -65,7 +65,7 @@ public class UserService {
         log.info("refresh: {}", refreshToken);
 
         ResponseLogin responseLogin = ResponseLogin.builder()
-                .needSetInterest(isRegistered)
+                .isRegistered(isRegistered)
                 .access(accessToken)
                 .refresh(refreshToken)
                 .build();
