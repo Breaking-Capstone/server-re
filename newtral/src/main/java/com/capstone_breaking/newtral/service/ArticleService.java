@@ -11,6 +11,7 @@ import com.capstone_breaking.newtral.repository.CategoryRepository;
 import com.capstone_breaking.newtral.repository.UserCategoryRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.coyote.Response;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -19,6 +20,8 @@ import org.springframework.web.reactive.function.client.WebClient;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -111,5 +114,50 @@ public class ArticleService {
     }
 
 
+    @Transactional(readOnly = true)
+    public List<ResponseArticle> getSearchNews(String keyWord){
+        List<Article> titleSearch = articleRepository.findByTitleContains(keyWord);
+        List<Article> descriptionSearch = articleRepository.findByDescriptionContains(keyWord);
 
+        List<ResponseArticle> responseArticles = new ArrayList<>();
+
+        responseArticles.addAll(titleSearch.stream().map(search ->
+                new ResponseArticle(search.getId(), search.getTitle()
+                        , search.getDescription(), search.getContentShort()
+                        , search.getCompany(), search.getAuthor(), search.getUrl()
+                        , search.getUrlImage(), search.getPublishedAt(), search.getPercent1()
+                        ,search.getPercent2())).toList());
+
+        responseArticles.addAll(descriptionSearch.stream().map(search ->
+                new ResponseArticle(search.getId(), search.getTitle()
+                        , search.getDescription(), search.getContentShort()
+                        , search.getCompany(), search.getAuthor(), search.getUrl()
+                        , search.getUrlImage(), search.getPublishedAt(), search.getPercent1()
+                        ,search.getPercent2())).toList());
+
+        List<ResponseArticle> uniqueArticles = responseArticles.stream()
+                .collect(Collectors.toMap(ResponseArticle::getId, Function.identity(), (existing, replacement) -> existing))
+                .values()
+                .stream().toList();
+
+        return uniqueArticles;
+    }
+
+    @Transactional
+    public List<ResponseArticle> getArticles(Long percent) {
+        List<Article> articles = articleRepository.findByPercent1GreaterThan(percent);
+
+        List<ResponseArticle> responseArticles = articles.stream().map(article -> new ResponseArticle(article.getId(), article.getTitle(), article.getDescription(), article.getContentShort(), article.getCompany(), article.getAuthor(), article.getUrl(), article.getUrlImage(), article.getPublishedAt(), article.getPercent1(), article.getPercent2())).toList();
+
+        return responseArticles;
+    }
+
+    @Transactional
+    public ResponseArticle getArticle(Long articleId){
+        Article article = articleRepository.findById(articleId).get();
+
+        ResponseArticle responseArticle = new ResponseArticle(article.getId(), article.getTitle(), article.getDescription(), article.getContentShort(), article.getCompany(), article.getAuthor(), article.getUrl(), article.getUrlImage(), article.getPublishedAt(), article.getPercent1(), article.getPercent2());
+
+        return responseArticle;
+    }
 }

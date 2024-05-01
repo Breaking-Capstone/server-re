@@ -22,9 +22,7 @@ public class Category {
     @OneToMany(mappedBy = "category")
     private List<UserCategory> userCategories = new ArrayList<>();
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "category_id")
-    private Category category;
-
+    @OneToMany(mappedBy = "category")
+    private List<Article> articles = new ArrayList<>();
 
 }

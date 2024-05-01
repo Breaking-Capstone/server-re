@@ -9,7 +9,7 @@ import lombok.Getter;
 public class ResponseLogin {
 
     @Schema(description = "가입이 되어있는지 여부", example = "true")
-    private Boolean isRegister;
+    private Boolean needSetInterest;
 
     @Schema(description = "access토큰", example = "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJzdHJpbmciLCJyb2xlcyI6WyJST0xFX1VTRVIiXSwiaWQiOjEsInR5cGUiOiJhY2Nlc3MiLCJpYXQiOjE3MTI2NDc4MDMsImV4cCI6MTcxMjY1MTQwM30.-uafFJg0slWto4EBlR7wakCbrEndcpmWAeyUPty5m0A")
     private String access;
@@ -18,8 +18,8 @@ public class ResponseLogin {
     private String refresh;
 
     @Builder
-    public ResponseLogin(Boolean isRegister, String access, String refresh){
-        this.isRegister = isRegister;
+    public ResponseLogin(Boolean needSetInterest, String access, String refresh){
+        this.needSetInterest = needSetInterest;
         this.access = access;
         this.refresh = refresh;
     }

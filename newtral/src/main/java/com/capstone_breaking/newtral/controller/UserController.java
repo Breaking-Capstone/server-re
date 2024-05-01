@@ -2,9 +2,11 @@ package com.capstone_breaking.newtral.controller;
 
 import com.capstone_breaking.newtral.common.CommonResponse;
 import com.capstone_breaking.newtral.dto.Article.ResponseArticleForAIForm;
+import com.capstone_breaking.newtral.dto.Article.ResponseInterestCategoryArticle;
 import com.capstone_breaking.newtral.dto.RequestInterest;
 import com.capstone_breaking.newtral.dto.User.RequestUser;
 import com.capstone_breaking.newtral.dto.User.ResponseLogin;
+import com.capstone_breaking.newtral.dto.User.ResponseUser;
 import com.capstone_breaking.newtral.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -13,6 +15,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.coyote.Response;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -45,9 +48,39 @@ public class UserController {
 
     @PatchMapping("/users/interest")
     @Operation(summary = "유저 흥미 설정하기",description = "이거고친다고 오래걸렸다. 젠장. <br><br> 입력:<br> RequestInterest(DTO) <br><br> 출력:<br> null <br><br><br> 현재 가능한 흥미들: business, entertainment, general, health, science, sports, technology")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "유저 흥미 설정 성공", content = @Content(schema = @Schema(implementation = RequestInterest.class))),
+    })
     public ResponseEntity<CommonResponse> setUserInterest(@RequestBody RequestInterest requestInterest,
                                                           @AuthenticationPrincipal UserDetails userDetails){
         userService.setUserInterest(requestInterest, userDetails);
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(new CommonResponse("OK", null));
+    }
+
+    @GetMapping("/users/status")
+    @Operation(summary = "유저 정보 불러오기", description = "유저 정보 다불러옴 <br><br> 입력: <br> 필요음슴(토큰이나 넣어라 인간!) <br><br> 출력: <br> ResponseUser")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "데이터베이스에서 뉴스 받아오기 성공", content = @Content(schema = @Schema(implementation = ResponseUser.class))),
+    })
+    public ResponseEntity<CommonResponse> getUserStatus(@AuthenticationPrincipal UserDetails userDetails){
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(new CommonResponse("OK", userService.getUserStatus(userDetails)));
+    }
+
+    @GetMapping("/users/interest-check")
+    @Operation(summary = "유저가 흥미를 설정했나안햇나 확인", description = "유저가 흥미 설정 했는지 안했는지 확인 <br><br> 입력: <br> 필요음슴(토큰이나 넣어라 인간!) <br><br> 출력: <br> 흥미 설정 했으면 true 안했으면 false")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "데이터베이스에서 뉴스 받아오기 성공", content = @Content(schema = @Schema(implementation = ResponseInterestCategoryArticle.class))),
+    })
+    public ResponseEntity<CommonResponse> userInterestNullCheck(@AuthenticationPrincipal UserDetails userDetails){
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(new CommonResponse("OK", userService.checkInterest(userDetails)));
+    }
+
+    @DeleteMapping("/users/delete")
+    public ResponseEntity<CommonResponse> deleteUser(String userId){
+        userService.deleteUser(userId);
         return ResponseEntity.status(HttpStatus.OK)
                 .body(new CommonResponse("OK", null));
     }

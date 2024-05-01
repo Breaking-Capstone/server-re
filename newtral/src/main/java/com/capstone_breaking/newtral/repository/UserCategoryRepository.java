@@ -13,3 +13,5 @@ public interface UserCategoryRepository extends JpaRepository<UserCategory, Long
 
     boolean findByCategoryId(Long categoryId);
 }
+
+//힘들때는 당근을 흔들어보아요...

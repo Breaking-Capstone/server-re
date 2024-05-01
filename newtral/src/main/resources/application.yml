@@ -24,7 +24,7 @@ spring:
     open-in-view: false
     show-sql: true
     hibernate:
-      ddl-auto: create-drop
+      ddl-auto: update
   jwt:
     secret: "rropwejqcoigfjgoipcmejgoipwemjctoipdsfnoiqweufhdsnjncjkxznvklnioudhfjwheoiuqhuifohjkadsnfjkasdlnjasdiofuhuiwehfoiuqhweuoifhudsahfjkdslavjnzcxmvlkjasdflahf"
     refresh-token-valid-time: 600000
