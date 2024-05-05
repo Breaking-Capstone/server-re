@@ -6,6 +6,7 @@ import com.capstone_breaking.newtral.dto.Article.ResponseInterestCategoryArticle
 import com.capstone_breaking.newtral.dto.RequestInterest;
 import com.capstone_breaking.newtral.dto.User.RequestUser;
 import com.capstone_breaking.newtral.dto.User.ResponseLogin;
+import com.capstone_breaking.newtral.dto.User.ResponseToken;
 import com.capstone_breaking.newtral.dto.User.ResponseUser;
 import com.capstone_breaking.newtral.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -13,6 +14,7 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.coyote.Response;
@@ -84,5 +86,12 @@ public class UserController {
         return ResponseEntity.status(HttpStatus.OK)
                 .body(new CommonResponse("OK", null));
     }
-
+    @GetMapping(value = "/users/auth/reissue")
+    @Operation(summary = "토큰 재발급", description = "refreshToken과 accessToken을 재발급합니다. RefreshToken을 Authorization 헤더에 넣어주면 유효성검사 후 둘 다 재발급합니다.(RefreshToken의 유효기간을 늘리기 위해)")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "accessToken과 RefreshToken 재발급 성공", content = @Content(schema = @Schema(implementation = ResponseToken.class))),
+    })
+    public ResponseEntity<CommonResponse> reissueAccessToken(HttpServletRequest request) {
+        return ResponseEntity.status(HttpStatus.OK).body(new CommonResponse("토큰 재발급 성공", userService.reissueAccessToken(request)));
+    }
 }

@@ -1,6 +1,8 @@
 package com.capstone_breaking.newtral.service;
 
 import com.capstone_breaking.newtral.common.CustomUserDetails;
+import com.capstone_breaking.newtral.common.ExceptionMessage;
+import com.capstone_breaking.newtral.common.ex.NotFoundElementException;
 import com.capstone_breaking.newtral.domain.Article;
 import com.capstone_breaking.newtral.domain.UserCategory;
 import com.capstone_breaking.newtral.dto.Article.*;
@@ -116,6 +118,10 @@ public class ArticleService {
 
     @Transactional(readOnly = true)
     public List<ResponseArticle> getSearchNews(String keyWord){
+        if(keyWord.isBlank()){
+            return new ArrayList<>();
+        }
+
         List<Article> titleSearch = articleRepository.findByTitleContains(keyWord);
         List<Article> descriptionSearch = articleRepository.findByDescriptionContains(keyWord);
 

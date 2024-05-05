@@ -1,7 +1,10 @@
 package com.capstone_breaking.newtral.service;
 
 import com.capstone_breaking.newtral.common.CustomUserDetails;
+import com.capstone_breaking.newtral.common.ExceptionMessage;
 import com.capstone_breaking.newtral.common.JwtProvider;
+import com.capstone_breaking.newtral.common.ex.FailTokenCreateException;
+import com.capstone_breaking.newtral.common.ex.NotFoundElementException;
 import com.capstone_breaking.newtral.domain.Category;
 import com.capstone_breaking.newtral.domain.User;
 import com.capstone_breaking.newtral.domain.UserCategory;
@@ -10,18 +13,18 @@ import com.capstone_breaking.newtral.dto.RequestInterest;
 import com.capstone_breaking.newtral.dto.User.RequestUser;
 import com.capstone_breaking.newtral.dto.User.ResponseLogin;
 import com.capstone_breaking.newtral.dto.User.ResponseUser;
+import com.capstone_breaking.newtral.dto.User.ResponseToken;
 import com.capstone_breaking.newtral.repository.CategoryRepository;
 import com.capstone_breaking.newtral.repository.UserCategoryRepository;
 import com.capstone_breaking.newtral.repository.UserRepository;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 
 @Service
@@ -94,7 +97,8 @@ public class UserService {
 
         for(String category : requestInterest.getInterests()){
             log.info("카테고리: {}", category);
-            Category getCategory = categoryRepository.findById(CategoryList.valueOf(category).getId()).get();
+            Category getCategory = categoryRepository.findById(CategoryList.valueOf(category).getId())
+                    .orElseThrow(()->new NotFoundElementException(ExceptionMessage.ELEMENT_NOT_FOUND));
                 UserCategory userCategory = UserCategory.builder()
                         .category(getCategory)
                         .user(user)
@@ -127,6 +131,42 @@ public class UserService {
         User user = userRepository.findByEmail(userId).get();
 
         userRepository.delete(user);
+    }
+
+    public ResponseToken reissueAccessToken(HttpServletRequest request) {
+
+        String token = jwtProvider.resolveServiceToken(request);
+
+        Long userId = jwtProvider.getUserId(token);
+        log.info("[reissueAccessToken] memberId 추출 성공. memberId = {}", userId);
+
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new NotFoundElementException(ExceptionMessage.MEMBER_NOTFOUND));
+        log.info("[reissueAccessToken] member 찾기 성공. memberEmail = {}", user.getEmail());
+
+        String refreshToken = user.getRefreshToken();
+
+        //refreshToken 의 유효 시간과, Header 에 담겨 온 RefreshToken 과 redis 에 저장되어있는 RefreshToken 과 일치하는지 비교한다.
+
+        if (!refreshToken.equals(token)) {
+            throw new FailTokenCreateException(ExceptionMessage.REFRESHTOKEN_NOT_SAME);
+        }
+
+        String accessToken = jwtProvider.creteAccessToken(user.getEmail(), userId, user.getRole());
+        log.info("[reissueAccessToken] accessToken 새로 발급 성공: {}", accessToken);
+
+        String newRefreshToken = jwtProvider.createRefreshToken(user.getEmail(), userId, user.getRole());
+        log.info("[reissueAccessToken] refreshToken 새로 발급 성공: {}", newRefreshToken);
+
+        ResponseToken responseToken = ResponseToken.builder()
+                .refreshToken(newRefreshToken)
+                .accessToken(accessToken)
+                .build();
+
+        //redis 에 토큰 저장
+        userRepository.save(user.editRefreshToken(newRefreshToken));
+
+        return responseToken;
     }
 
 }

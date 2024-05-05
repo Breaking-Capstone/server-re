@@ -1,5 +1,7 @@
 package com.capstone_breaking.newtral.common;
 
+import com.capstone_breaking.newtral.common.ex.JwtEmptyException;
+import com.capstone_breaking.newtral.common.ex.MismatchTokenTypeException;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jws;
 import io.jsonwebtoken.Jwts;
@@ -94,26 +96,28 @@ public class JwtProvider {
     }
 
 
-    public Long getMemberId(String token) {
+    public Long getUserId(String token) {
         log.info("[getUsername] 토큰 기반 회원 구별 정보 추출");
-        Long memberId = Long.valueOf(Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token).getBody().get("memberId").toString());
+        Long memberId = Long.valueOf(Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token).getBody().get("id").toString());
         log.info("[getUsername] 토큰 기반 회원 구별 정보 추출 완료, info : {}", memberId);
         return memberId;
     }
 
     public Boolean validAccessToken(String token) {
+        log.info("값: {}", Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token).getBody().get("type").equals("access"));
         if (Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token).getBody().get("type").equals("access")) {
             return true;
         } else {
-            throw new RuntimeException(ExceptionMessage.TOKEN_TYPE_INVALID.getMessage());
+            throw new MismatchTokenTypeException(ExceptionMessage.TOKEN_TYPE_INVALID);
         }
     }
 
     public Boolean validRefreshToken(String token) {
+        log.info("값: {}", Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token).getBody().get("type").equals("refresh"));
         if (Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token).getBody().get("type").equals("refresh")) {
             return true;
         } else {
-            throw new RuntimeException(ExceptionMessage.TOKEN_TYPE_INVALID.getMessage());
+            throw new MismatchTokenTypeException(ExceptionMessage.TOKEN_TYPE_INVALID);
         }
     }
 
@@ -123,17 +127,17 @@ public class JwtProvider {
         return request.getHeader("Authorization");
     }
 
-//    public String resolveServiceToken(HttpServletRequest request) {
-//        log.info("[resolveServiceToken] HTTP 헤더에서 Token 값 추출");
-//
-//        String token = request.getHeader("Authorization");
-//
-//        if (token == null) {
-//            throw new JwtEmptyException(ExceptionMessage.TOKEN_NOT_FOUND.getMessage());
-//        } else {
-//            return token.substring(7);
-//        }
-//    }
+    public String resolveServiceToken(HttpServletRequest request) {
+        log.info("[resolveServiceToken] HTTP 헤더에서 Token 값 추출");
+
+        String token = request.getHeader("Authorization");
+
+        if (token == null) {
+            throw new JwtEmptyException(ExceptionMessage.TOKEN_NOT_FOUND);
+        } else {
+            return token.substring(7);
+        }
+    }
 
     public boolean validDateToken(String token) {
         log.info("[validateToken] 토큰 유효 체크 시작");

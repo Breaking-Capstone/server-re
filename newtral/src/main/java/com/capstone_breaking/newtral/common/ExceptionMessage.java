@@ -10,8 +10,8 @@ public enum ExceptionMessage {
     MEMBER_NOTFOUND("멤버가 존재하지 않습니다.", 0, HttpStatus.NOT_FOUND),
     TOKEN_NOT_FOUND("토큰이 비었거나 null입니다", 0, HttpStatus.BAD_REQUEST),
     TOKEN_TYPE_INVALID("토큰 타입이 틀렸습니다.", 0, HttpStatus.BAD_REQUEST),
-    MEMBER_PROJECT_NOT_FOUND("멤버-프로젝트가 존재하지 않습니다.", 0, HttpStatus.NOT_FOUND);
-
+    REFRESHTOKEN_NOT_SAME("리프레시 토큰이 일치하지 않습니다",0,HttpStatus.BAD_REQUEST),
+    ELEMENT_NOT_FOUND("입력한 객체는 데이터베이스에 존재하지 않습니다.", 0, HttpStatus.NOT_FOUND);
 
     private final String message;
 

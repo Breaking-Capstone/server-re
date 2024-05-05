@@ -1,5 +1,6 @@
 package com.capstone_breaking.newtral.common;
 
+import com.capstone_breaking.newtral.common.ex.MismatchTokenTypeException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.MalformedJwtException;
@@ -47,6 +48,8 @@ public class JwtExceptionHandlerFilter extends OncePerRequestFilter {
         } catch (NullPointerException e) {
             setErrorResponse(response, ExceptionMessage.TOKEN_NOT_FOUND);
             log.info("[JwtExceptionHandlerFilter] error name = NullPointerException");
+        } catch (MismatchTokenTypeException e) {
+            setErrorResponse(response, ExceptionMessage.TOKEN_TYPE_INVALID);
         }
     }
 
