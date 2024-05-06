@@ -53,6 +53,7 @@ public class UserService {
                     .role(List.of("ROLE_USER"))
                     .profileImage(requestUser.getProfileImage())
                     .provider(requestUser.getProvider())
+                    .reliabilityPercent(0L)
                     .build();
             isRegistered = false;
         }
@@ -169,4 +170,23 @@ public class UserService {
         return responseToken;
     }
 
+    public void setUserReliabilityPercent(Long percent, UserDetails userDetails){
+        Long userId = ((CustomUserDetails) userDetails).getId();
+        log.info("유저 아이디 = {}", userId);
+
+        User user = userRepository.findById(userId)
+                .orElseThrow(()->new NotFoundElementException(ExceptionMessage.MEMBER_NOTFOUND));
+
+        userRepository.save(user.editReliabilityPercent(percent));
+    }
+
+    public Long getUserReliabilityPercent(UserDetails userDetails){
+        Long userId = ((CustomUserDetails) userDetails).getId();
+        log.info("유저 아이디 = {}", userId);
+
+        User user = userRepository.findById(userId)
+                .orElseThrow(()->new NotFoundElementException(ExceptionMessage.MEMBER_NOTFOUND));
+
+        return user.getReliabilityPercent();
+    }
 }

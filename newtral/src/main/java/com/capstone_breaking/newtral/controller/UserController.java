@@ -60,6 +60,14 @@ public class UserController {
                 .body(new CommonResponse("OK", null));
     }
 
+    @PatchMapping("/users/reliability")
+    public ResponseEntity<CommonResponse> setUserReliabilityPercent(Long percent,
+                                                                    @AuthenticationPrincipal UserDetails userDetails){
+        userService.setUserReliabilityPercent(percent, userDetails);
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(new CommonResponse("OK", null));
+    }
+
     @GetMapping("/users/status")
     @Operation(summary = "유저 정보 불러오기", description = "유저 정보 다불러옴 <br><br> 입력: <br> 필요음슴(토큰이나 넣어라 인간!) <br><br> 출력: <br> ResponseUser")
     @ApiResponses({
@@ -93,5 +101,11 @@ public class UserController {
     })
     public ResponseEntity<CommonResponse> reissueAccessToken(HttpServletRequest request) {
         return ResponseEntity.status(HttpStatus.OK).body(new CommonResponse("토큰 재발급 성공", userService.reissueAccessToken(request)));
+    }
+
+    @GetMapping(value = "/users/reliability")
+
+    public ResponseEntity<CommonResponse> getUserReliabilityPercent(@AuthenticationPrincipal UserDetails userDetails){
+        return ResponseEntity.status(HttpStatus.OK).body(new CommonResponse("OK", userService.getUserReliabilityPercent(userDetails)));
     }
 }

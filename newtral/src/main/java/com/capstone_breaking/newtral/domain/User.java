@@ -40,6 +40,8 @@ public class User extends Time {
     //프론트에서 직접 입력받을 정보
     private Long age;
 
+    private Long reliabilityPercent;
+
     @OneToMany(mappedBy = "user")
     private List<UserCategory> interests = new ArrayList<>();
 
@@ -57,9 +59,15 @@ public class User extends Time {
         return this;
     }
 
+    public User editReliabilityPercent(Long reliabilityPercent){
+        this.reliabilityPercent = reliabilityPercent;
+        return this;
+    }
+
     //builder 패턴, toDto
     @Builder
-    public User(String email, String name, List<String> role, String profileImage, String provider){
+    public User(String email, String name, List<String> role, String profileImage, String provider, Long reliabilityPercent){
+        this.reliabilityPercent = reliabilityPercent;
         this.email = email;
         this.name = name;
         this.role = role;

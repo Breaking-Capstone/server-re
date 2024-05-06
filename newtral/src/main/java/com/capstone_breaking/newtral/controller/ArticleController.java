@@ -92,13 +92,13 @@ public class ArticleController {
                 .body(new CommonResponse("OK", articleService.getArticles(reliability_p)));
     }
 
-    @GetMapping("/articles/content/{article_id}")
+    @GetMapping("/articles/content/{articleId}")
     @Operation(summary = "뉴스 내용 불러오기", description = "뉴스 내용 불러옴 <br><br> 입력: <br> 뉴스 pk <br><br> 출력: <br> ResponseArticle")
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "데이터베이스에서 뉴스 받아오기 성공", content = @Content(schema = @Schema(implementation = ResponseArticle.class))),
     })
-    public ResponseEntity<CommonResponse> getArticle(@PathVariable Long article_id){
-        return ResponseEntity.status(HttpStatus.OK).body(new CommonResponse("OK", articleService.getArticle(article_id)));
+    public ResponseEntity<CommonResponse> getArticle(@PathVariable Long articleId){
+        return ResponseEntity.status(HttpStatus.OK).body(new CommonResponse("OK", articleService.getArticle(articleId)));
     }
 
     @GetMapping("/articles/categorys/{category}")
