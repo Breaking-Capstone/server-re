@@ -78,12 +78,14 @@ public class ArticleService {
     }
 
     public void setNewsCurrent(Long id, Long percent1, Long percent2) {
+        log.info("[setNewsCurrent] 신뢰도 작성. newsId = {]", id);
         Optional<Article> news = articleRepository.findById(id);
 
         articleRepository.save(news.get().setPercent(percent1, percent2));
     }
 
     public Long getArticleCount() {
+        log.info("뉴스 개수 출력");
         return articleRepository.count();
     }
 

@@ -71,23 +71,23 @@ public class ArticleController {
                 .body(new CommonResponse("OK", articleService.getUserInterestArticle(userDetails)));
     }
 
-    @GetMapping ("/articles/search/{keyword}")
+    @GetMapping ("/articles/search")
     @Operation(summary = "전체 뉴스에서 검색하기", description = "제목+내용에서 검색한다. 제목이 먼저나오고 내용이 뒤에나온다 <br><br> 입력: <br> 검색할 단어 <br><br> 출력: <br> List(ResponseArticle) ")
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "데이터베이스에서 뉴스 받아오기 성공", content = @Content(schema = @Schema(implementation = ResponseArticle.class))),
     })
-    public ResponseEntity<CommonResponse> getSearchArticles(@PathVariable @RequestParam(defaultValue = "", required = false) String keyword){
+    public ResponseEntity<CommonResponse> getSearchArticles(@RequestParam(defaultValue = "", required = false) String keyword){
         return ResponseEntity.status(HttpStatus.OK)
                 .body(new CommonResponse("OK", articleService.getSearchNews(keyword)));
     }
 
-    @GetMapping("/articles/{reliability_p}")
+    @GetMapping("/articles/filter")
     @Operation(summary = "신뢰도 위의 뉴스만 출력", description = "신뢰도 위의 뉴스만 출력(전체뉴스 중) <br><br> 입력: <br> 신뢰도(기본값: 60) <br><br> 출력: <br> List(ResponseArticle) ")
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "데이터베이스에서 뉴스 받아오기 성공", content = @Content(schema = @Schema(implementation = ResponseInterestCategoryArticle.class))),
     })
     public ResponseEntity<CommonResponse> getArticles(
-            @PathVariable @RequestParam(defaultValue = "60", required = false) Long reliability_p){
+            @RequestParam(defaultValue = "60", required = false) Long reliability_p){
         return ResponseEntity.status(HttpStatus.OK)
                 .body(new CommonResponse("OK", articleService.getArticles(reliability_p)));
     }
@@ -106,7 +106,7 @@ public class ArticleController {
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "데이터베이스에서 뉴스 받아오기 성공", content = @Content(schema = @Schema(implementation = ResponseArticle.class))),
     })
-    public ResponseEntity<CommonResponse> getCategroyArticle(@PathVariable String category){
+    public ResponseEntity<CommonResponse> getCategoryArticle(@PathVariable String category){
         return ResponseEntity.status(HttpStatus.OK).body(new CommonResponse("OK", articleService.getCategoryArticle(category)));
     }
 
