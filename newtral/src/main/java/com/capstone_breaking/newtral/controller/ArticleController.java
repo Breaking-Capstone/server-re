@@ -9,6 +9,8 @@ import com.capstone_breaking.newtral.service.ArticleService;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.Parameters;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -46,10 +48,18 @@ public class ArticleController {
                 .body(new CommonResponse("OK", articleService.getNews(firstId,lastId)));
     }
 
-    @PatchMapping("/articles/percent/{id}")
+    @PatchMapping("/articles/percent1/{id}")
     @Operation(summary = "뉴스의 신뢰도 측정 결과 저장하기", description = "신뢰도 측정을 한 값을 데이터베이스에 저장한다.<br><br><br> 입력: <br><br> Long id: 뉴스의 데이터베이스상 pk값 <br><br> Long percent1: 신뢰도값1 <br><br> Long percent2: 신뢰도값2 (신뢰도 측정해야되는게 두개라고 들어서 일단 두개 넣어놓음. 하나만 넣어도 무관. 만약 하나만 넣는거면 percent2에 null이나 0을 넣을 것.)<br><br><br> 출력:<br> null")
-    public ResponseEntity<CommonResponse> recodeNewsAccuracy(@PathVariable Long id, Long percent1, Long percent2){
-        articleService.setNewsCurrent(id,percent1,percent2);
+    public ResponseEntity<CommonResponse> recodeNewsAccuracyForPercent1(@PathVariable Long id, Float percent1, String measure){
+        articleService.setNewsCurrentForPercent1(id,percent1,measure);
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(new CommonResponse("OK", null));
+    }
+
+    @PatchMapping("/articles/percent2/{id}")
+    @Operation(summary = "뉴스의 신뢰도 측정 결과 저장하기", description = "신뢰도 측정을 한 값을 데이터베이스에 저장한다.<br><br><br> 입력: <br><br> Long id: 뉴스의 데이터베이스상 pk값 <br><br> Long percent1: 신뢰도값1 <br><br> Long percent2: 신뢰도값2 (신뢰도 측정해야되는게 두개라고 들어서 일단 두개 넣어놓음. 하나만 넣어도 무관. 만약 하나만 넣는거면 percent2에 null이나 0을 넣을 것.)<br><br><br> 출력:<br> null")
+    public ResponseEntity<CommonResponse> recodeNewsAccuracyForPercent2(@PathVariable Long id, Float percent2){
+        articleService.setNewsCurrentForPercent2(id,percent2);
         return ResponseEntity.status(HttpStatus.OK)
                 .body(new CommonResponse("OK", null));
     }

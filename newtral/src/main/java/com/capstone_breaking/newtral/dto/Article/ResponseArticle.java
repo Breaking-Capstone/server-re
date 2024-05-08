@@ -44,14 +44,14 @@ public class ResponseArticle {
     private LocalDateTime publishedAt;
 
     @Schema(description = "뉴스 신뢰도", example = "형식 아직 받은게없어서 몰루!")
-    private Long percent1;
+    private Float percent1;
 
     @Schema(description = "뉴스 신뢰도", example = "형식 아직 받은게없어서 몰루!")
-    private Long percent2;
+    private Float percent2;
     @Builder
     public ResponseArticle(Long id, String title, String description, String contentShort,
                    String company, String author, String url, String urlImage,
-                   LocalDateTime publishedAt, Long percent1, Long percent2){
+                   LocalDateTime publishedAt, Float percent1, Float percent2){
         this.id = id;
         this.company = company;
         this.author = author;

@@ -37,9 +37,11 @@ public class Article {
 
     private LocalDateTime publishedAt;
 
-    private Long percent1;
+    private Float percent1;
 
-    private Long percent2;
+    private Float percent2;
+
+    private String realOrFalse;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "article_id")
@@ -61,13 +63,16 @@ public class Article {
         this.category = category;
     }
 
-    public Article setPercent(Long percent1, Long percent2){
+    public Article setPercent1(Float percent1, String realOrFalse){
         this.percent1 = percent1;
+        this.realOrFalse = realOrFalse;
+        return this;
+    }
+
+    public Article setPercent2(Float percent2){
         this.percent2 = percent2;
 
         return this;
     }
-
-
 
 }

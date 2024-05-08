@@ -77,11 +77,20 @@ public class ArticleService {
         return responseNews;
     }
 
-    public void setNewsCurrent(Long id, Long percent1, Long percent2) {
+    public void setNewsCurrentForPercent1(Long id, Float percent1,
+                                          String realOrFalse) {
         log.info("[setNewsCurrent] 신뢰도 작성. newsId = {]", id);
         Optional<Article> news = articleRepository.findById(id);
 
-        articleRepository.save(news.get().setPercent(percent1, percent2));
+        articleRepository.save(news.get().setPercent1((percent1), realOrFalse));
+    }
+
+    public void setNewsCurrentForPercent2(Long id, Float percent2){
+        log.info("[setNewsCurrent] 신뢰도 작성. newsId = {]", id);
+        Optional<Article> news = articleRepository.findById(id);
+
+        articleRepository.save(news.get().setPercent2(percent2));
+
     }
 
     public Long getArticleCount() {
