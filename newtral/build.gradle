@@ -28,9 +28,6 @@ dependencies {
 	//데이터베이스 : mysql 사용
 	runtimeOnly 'com.mysql:mysql-connector-j'
 
-	//oauth2 관련 의존성
-	implementation 'org.springframework.boot:spring-boot-starter-oauth2-client'
-
 	//security 의존성
 	implementation 'org.springframework.boot:spring-boot-starter-security'
 

@@ -48,10 +48,13 @@ public class ResponseArticle {
 
     @Schema(description = "뉴스 신뢰도", example = "형식 아직 받은게없어서 몰루!")
     private Float percent2;
+
+    @Schema(description = "true/false", example = "false")
+    private String realOrFalse;
     @Builder
     public ResponseArticle(Long id, String title, String description, String contentShort,
                    String company, String author, String url, String urlImage,
-                   LocalDateTime publishedAt, Float percent1, Float percent2){
+                   LocalDateTime publishedAt, Float percent1, Float percent2, String realOrFalse){
         this.id = id;
         this.company = company;
         this.author = author;
@@ -63,22 +66,8 @@ public class ResponseArticle {
         this.title = title;
         this.percent1=percent1;
         this.percent2=percent2;
+        this.realOrFalse = realOrFalse;
     }
 
-    public ResponseArticle toDto(Article article){
-        this.id = article.getId();
-        this.company = article.getCompany();
-        this.author = article.getAuthor();
-        this.url = article.getUrl();
-        this.urlImage = article.getUrlImage();
-        this.publishedAt = article.getPublishedAt();
-        this.description = article.getDescription();
-        this.contentShort = article.getContentShort();
-        this.title = article.getTitle();
-        this.percent1=article.getPercent1();
-        this.percent2=article.getPercent2();
-
-        return this;
-    }
 
 }
