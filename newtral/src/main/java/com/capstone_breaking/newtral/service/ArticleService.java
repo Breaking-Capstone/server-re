@@ -113,7 +113,7 @@ public class ArticleService {
                             article.getDescription(), article.getContentShort(),
                             article.getCompany(), article.getAuthor(), article.getUrl(),
                             article.getUrlImage(), article.getPublishedAt(),
-                            article.getPercent1(), article.getPercent2(), article.getRealOrFalse())).toList();
+                            article.getPercent1(), article.getPercent2(), article.getRealOrFalse(), article.getCategory().getCategoryName())).toList();
 
             ResponseArticleForm responseArticleForm = new ResponseArticleForm(interest.getCategory().getCategoryName(), responseArticles);
 
@@ -143,14 +143,14 @@ public class ArticleService {
                         , search.getDescription(), search.getContentShort()
                         , search.getCompany(), search.getAuthor(), search.getUrl()
                         , search.getUrlImage(), search.getPublishedAt(), search.getPercent1()
-                        ,search.getPercent2(),search.getRealOrFalse())).toList());
+                        , search.getPercent2(),search.getRealOrFalse(), search.getCategory().getCategoryName())).toList());
 
         responseArticles.addAll(descriptionSearch.stream().map(search ->
                 new ResponseArticle(search.getId(), search.getTitle()
                         , search.getDescription(), search.getContentShort()
                         , search.getCompany(), search.getAuthor(), search.getUrl()
                         , search.getUrlImage(), search.getPublishedAt(), search.getPercent1()
-                        ,search.getPercent2(), search.getRealOrFalse())).toList());
+                        ,search.getPercent2(), search.getRealOrFalse(), search.getCategory().getCategoryName())).toList());
 
         List<ResponseArticle> uniqueArticles = responseArticles.stream()
                 .collect(Collectors.toMap(ResponseArticle::getId, Function.identity(), (existing, replacement) -> existing))
@@ -164,7 +164,7 @@ public class ArticleService {
     public List<ResponseArticle> getArticles(Long percent) {
         List<Article> articles = articleRepository.findByPercent1GreaterThan(percent);
 
-        List<ResponseArticle> responseArticles = articles.stream().map(article -> new ResponseArticle(article.getId(), article.getTitle(), article.getDescription(), article.getContentShort(), article.getCompany(), article.getAuthor(), article.getUrl(), article.getUrlImage(), article.getPublishedAt(), article.getPercent1(), article.getPercent2(), article.getRealOrFalse())).toList();
+        List<ResponseArticle> responseArticles = articles.stream().map(article -> new ResponseArticle(article.getId(), article.getTitle(), article.getDescription(), article.getContentShort(), article.getCompany(), article.getAuthor(), article.getUrl(), article.getUrlImage(), article.getPublishedAt(), article.getPercent1(), article.getPercent2(), article.getRealOrFalse(), article.getCategory().getCategoryName())).toList();
 
         return responseArticles;
     }
@@ -173,7 +173,7 @@ public class ArticleService {
     public ResponseArticle getArticle(Long articleId){
         Article article = articleRepository.findById(articleId).get();
 
-        ResponseArticle responseArticle = new ResponseArticle(article.getId(), article.getTitle(), article.getDescription(), article.getContentShort(), article.getCompany(), article.getAuthor(), article.getUrl(), article.getUrlImage(), article.getPublishedAt(), article.getPercent1(), article.getPercent2(), article.getRealOrFalse());
+        ResponseArticle responseArticle = new ResponseArticle(article.getId(), article.getTitle(), article.getDescription(), article.getContentShort(), article.getCompany(), article.getAuthor(), article.getUrl(), article.getUrlImage(), article.getPublishedAt(), article.getPercent1(), article.getPercent2(), article.getRealOrFalse(), article.getCategory().getCategoryName());
 
         return responseArticle;
     }
@@ -186,8 +186,14 @@ public class ArticleService {
                         article.getDescription(), article.getContentShort(),
                         article.getCompany(), article.getAuthor(), article.getUrl(),
                         article.getUrlImage(), article.getPublishedAt(),
-                        article.getPercent1(), article.getPercent2(), article.getRealOrFalse())).toList();
+                        article.getPercent1(), article.getPercent2(), article.getRealOrFalse(), article.getCategory().getCategoryName())).toList();
 
         return responseArticles;
+    }
+
+    public void setDescription(Long articleId, String description){
+        Article article = articleRepository.findById(articleId).get();
+
+        articleRepository.save(article.setDescription(description));
     }
 }

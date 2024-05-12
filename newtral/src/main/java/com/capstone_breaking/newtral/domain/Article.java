@@ -22,7 +22,7 @@ public class Article {
 
     private String title;
 
-    @Column(length = 5000)
+    @Column(length = 10000)
     private String description;
 
     private String contentShort;
@@ -71,6 +71,12 @@ public class Article {
 
     public Article setPercent2(Float percent2){
         this.percent2 = percent2;
+
+        return this;
+    }
+
+    public Article setDescription(String description){
+        this.description = description;
 
         return this;
     }

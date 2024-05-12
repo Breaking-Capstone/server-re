@@ -108,4 +108,6 @@ public class UserController {
     public ResponseEntity<CommonResponse> getUserReliabilityPercent(@AuthenticationPrincipal UserDetails userDetails){
         return ResponseEntity.status(HttpStatus.OK).body(new CommonResponse("OK", userService.getUserReliabilityPercent(userDetails)));
     }
+
+
 }

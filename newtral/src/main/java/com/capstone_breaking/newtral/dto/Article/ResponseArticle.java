@@ -51,10 +51,12 @@ public class ResponseArticle {
 
     @Schema(description = "true/false", example = "false")
     private String realOrFalse;
+
+    private String categoryName;
     @Builder
     public ResponseArticle(Long id, String title, String description, String contentShort,
                    String company, String author, String url, String urlImage,
-                   LocalDateTime publishedAt, Float percent1, Float percent2, String realOrFalse){
+                   LocalDateTime publishedAt, Float percent1, Float percent2, String realOrFalse, String categoryName){
         this.id = id;
         this.company = company;
         this.author = author;
@@ -67,6 +69,7 @@ public class ResponseArticle {
         this.percent1=percent1;
         this.percent2=percent2;
         this.realOrFalse = realOrFalse;
+        this.categoryName = categoryName;
     }
 
 

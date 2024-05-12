@@ -120,4 +120,10 @@ public class ArticleController {
         return ResponseEntity.status(HttpStatus.OK).body(new CommonResponse("OK", articleService.getCategoryArticle(category)));
     }
 
+    @PatchMapping("/ha")
+    public ResponseEntity<CommonResponse> setDescription(Long articleId, String discription){
+        articleService.setDescription(articleId, discription);
+
+        return ResponseEntity.status(HttpStatus.OK).body(new CommonResponse("OK", null));
+    }
 }
